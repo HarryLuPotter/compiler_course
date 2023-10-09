@@ -29,17 +29,17 @@ void yyerror(const char* s);
 %%
 
 
-lines   :       lines expr ';' { printf("%f\n", $2); }
-        |       lines ';'
+lines   :       lines expr '\n' { printf("%s\n", $2); }
+        |       lines '\n'
         |
         ;
 //TODO:完善表达式的规则
-expr    :       expr ADD expr   { strcat($$,$1);strcat($$,$3);strcat($$,"+"); }
-        |       expr MINUS expr   { strcat($$,$1);strcat($$,$3);strcat($$,"-"); }
-        |       expr MUL expr   { strcat($$,$1);strcat($$,$3);strcat($$,"*"); }
-        |       expr DIV expr   { strcat($$,$1);strcat($$,$3);strcat($$,"/"); }
+expr    :       expr ADD expr   { strcpy($$,$1);strcat($$, " ");strcat($$,$3);strcat($$, " ");strcat($$,"+"); }
+        |       expr MINUS expr   { strcpy($$,$1);strcat($$, " ");strcat($$,$3);strcat($$, " ");strcat($$,"-"); }
+        |       expr MUL expr   { strcpy($$,$1);strcat($$, " ");strcat($$,$3);strcat($$, " ");strcat($$,"*"); }
+        |       expr DIV expr   { strcpy($$,$1);strcat($$, " ");strcat($$,$3);strcat($$, " ");strcat($$,"/"); }
         |       LPAREN expr RPAREN  { strcpy($$,$2); }
-        |       MINUS expr %prec UMINUS   { strcat($$,$2);strcat($$,"minus"); }
+        |       MINUS expr %prec UMINUS   { strcpy($$,$2);strcat($$, " ");strcat($$,"minus"); }
         |       NUMBER  { strcpy($$,$1); }
         ;
 
@@ -52,16 +52,19 @@ int yylex()
     int t;
     while(1){
         t=getchar();
-        if(t==' '||t=='\t'||t=='\n'){
+        if (t == '\n') return t;
+        if(t==' '||t=='\t'){
             //do noting
         }else if(isdigit(t)){
             //TODO:解析多位数字返回数字类型 
-            yylval = 0;
+            yylval = (char*)malloc(sizeof(char) * 100);
+            int idx = 0;
             while (isdigit(t))
             {
-                yylval = 10 * yylval + t - '0';
+                yylval[idx++] = t;
                 t = getchar();
             }
+            yylval[idx] = '\0';
             ungetc(t, stdin); //yyin
             return NUMBER;
         }else if(t=='+'){

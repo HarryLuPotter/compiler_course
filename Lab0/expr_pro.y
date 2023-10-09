@@ -32,8 +32,8 @@ void yyerror(const char* s);
 %%
 
 
-lines   :       lines expr ';' { printf("%f\n", $2); }
-        |       lines ';'
+lines   :       lines expr '\n' { printf("%f\n", $2); }
+        |       lines '\n'
         |
         ;
 //TODO:完善表达式的规则
@@ -55,7 +55,8 @@ int yylex()
     int t;
     while(1){
         t=getchar();
-        if(t==' '||t=='\t'||t=='\n'){
+        if (t == '\n') return t;
+        if(t==' '||t=='\t'){
             //do noting
         }else if(isdigit(t)){
             //TODO:解析多位数字返回数字类型 

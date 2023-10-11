@@ -66,25 +66,21 @@
 
 
 /* First part of user prologue.  */
-#line 1 "postfix.y"
+#line 1 "huibian.y"
 
-/*********************************************
-实现中缀表达式到后缀表达式的转换
-YACC file
-**********************************************/
-#include<stdio.h>
-#include<stdlib.h>
-#include<ctype.h>
-#include<string.h>
-#ifndef YYSTYPE
-#define YYSTYPE char*
-#endif
+    //
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
 int yylex();
 extern int yyparse();
 FILE* yyin;
 void yyerror(const char* s);
+//寄存器
+int reg = 0;  
 
-#line 88 "post.c"
+#line 84 "huibian.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -129,24 +125,24 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    ADD = 258,
-    MINUS = 259,
-    MUL = 260,
-    DIV = 261,
-    NUMBER = 262,
-    LPAREN = 263,
-    RPAREN = 264,
+    NUMBER = 258,
+    ADD = 259,
+    MINUS = 260,
+    MUL = 261,
+    DIV = 262,
+    left_paren = 263,
+    right_paren = 264,
     UMINUS = 265
   };
 #endif
 /* Tokens.  */
-#define ADD 258
-#define MINUS 259
-#define MUL 260
-#define DIV 261
-#define NUMBER 262
-#define LPAREN 263
-#define RPAREN 264
+#define NUMBER 258
+#define ADD 259
+#define MINUS 260
+#define MUL 261
+#define DIV 262
+#define left_paren 263
+#define right_paren 264
 #define UMINUS 265
 
 /* Value type.  */
@@ -467,7 +463,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   28
+#define YYLAST   33
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  12
@@ -524,8 +520,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    32,    32,    33,    34,    37,    38,    39,    40,    41,
-      42,    43
+       0,    26,    26,    27,    28,    31,    35,    39,    43,    47,
+      48,    51
 };
 #endif
 
@@ -534,8 +530,8 @@ static const yytype_int8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "ADD", "MINUS", "MUL", "DIV", "NUMBER",
-  "LPAREN", "RPAREN", "UMINUS", "';'", "$accept", "lines", "expr", YY_NULLPTR
+  "$end", "error", "$undefined", "NUMBER", "ADD", "MINUS", "MUL", "DIV",
+  "left_paren", "right_paren", "UMINUS", "';'", "$accept", "lines", "expr", YY_NULLPTR
 };
 #endif
 
@@ -549,7 +545,7 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-3)
+#define YYPACT_NINF (-6)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -563,8 +559,8 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,     0,    -3,    -2,    -3,    -2,    -3,    10,    -3,    19,
-      -2,    -2,    -2,    -2,    -3,    -3,    21,    21,    -3,    -3
+      -6,     0,    -6,    -6,    25,    25,    -6,    12,    -6,    20,
+      25,    25,    25,    25,    -6,    -6,    -5,    -5,    -6,    -6
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -572,14 +568,14 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       4,     0,     1,     0,    11,     0,     3,     0,     7,     0,
-       0,     0,     0,     0,     2,    10,     5,     6,     8,     9
+       4,     0,     1,    11,     0,     0,     3,     0,    10,     0,
+       0,     0,     0,     0,     2,     9,     5,     6,     7,     8
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -3,    -3,     7
+      -6,    -6,     2
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -593,24 +589,26 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       2,     0,     3,     0,     3,     4,     5,     4,     5,     0,
-       8,     6,     9,    10,    11,    12,    13,    16,    17,    18,
-      19,    14,    10,    11,    12,    13,    12,    13,    15
+       2,    12,    13,     3,     0,     4,     8,     9,     5,     0,
+       0,     6,    16,    17,    18,    19,    10,    11,    12,    13,
+       0,     0,     0,    14,    10,    11,    12,    13,     3,    15,
+       4,     0,     0,     5
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,    -1,     4,    -1,     4,     7,     8,     7,     8,    -1,
-       3,    11,     5,     3,     4,     5,     6,    10,    11,    12,
-      13,    11,     3,     4,     5,     6,     5,     6,     9
+       0,     6,     7,     3,    -1,     5,     4,     5,     8,    -1,
+      -1,    11,    10,    11,    12,    13,     4,     5,     6,     7,
+      -1,    -1,    -1,    11,     4,     5,     6,     7,     3,     9,
+       5,    -1,    -1,     8
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    13,     0,     4,     7,     8,    11,    14,    14,    14,
-       3,     4,     5,     6,    11,     9,    14,    14,    14,    14
+       0,    13,     0,     3,     5,     8,    11,    14,    14,    14,
+       4,     5,     6,     7,    11,     9,    14,    14,    14,    14
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -623,8 +621,8 @@ static const yytype_int8 yyr1[] =
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     3,     2,     0,     3,     3,     2,     3,     3,
-       3,     1
+       0,     2,     3,     2,     0,     3,     3,     3,     3,     3,
+       2,     1
 };
 
 
@@ -1320,55 +1318,66 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 32 "postfix.y"
-                               { printf("%s\n", yyvsp[-1]); }
-#line 1326 "post.c"
+#line 26 "huibian.y"
+                         {  }
+#line 1324 "huibian.c"
     break;
 
   case 5:
-#line 37 "postfix.y"
-                                { yyval = (char *)malloc(50*sizeof(char)); strcpy(yyval, yyvsp[-2]); strcat(yyval, yyvsp[0]); strcat(yyval, "+ "); }
-#line 1332 "post.c"
+#line 31 "huibian.y"
+                        { 
+            printf("ADD r%d, r%d, r%d\n", reg-2, reg-2, reg-1);
+            --reg;
+        }
+#line 1333 "huibian.c"
     break;
 
   case 6:
-#line 38 "postfix.y"
-                                  { yyval = (char *)malloc(50*sizeof(char)); strcpy(yyval, yyvsp[-2]); strcat(yyval, yyvsp[0]); strcat(yyval, "- ");}
-#line 1338 "post.c"
+#line 35 "huibian.y"
+                          { 
+            printf("SUB r%d, r%d, r%d\n", reg-2, reg-2, reg-1);
+            --reg;
+        }
+#line 1342 "huibian.c"
     break;
 
   case 7:
-#line 39 "postfix.y"
-                                          {yyval = (char *)malloc(50*sizeof(char)); strcpy(yyval, "-"); strcat(yyval, yyvsp[0]); strcat(yyval, " ");}
-#line 1344 "post.c"
+#line 39 "huibian.y"
+                        { 
+            printf("MUL r%d, r%d, r%d\n", reg-2, reg-2, reg-1);
+            --reg;
+        }
+#line 1351 "huibian.c"
     break;
 
   case 8:
-#line 40 "postfix.y"
-                                { yyval = (char *)malloc(50*sizeof(char)); strcpy(yyval, yyvsp[-2]); strcat(yyval, yyvsp[0]); strcat(yyval, "* ");}
-#line 1350 "post.c"
-    break;
-
-  case 9:
-#line 41 "postfix.y"
-                                { yyval = (char *)malloc(50*sizeof(char)); strcpy(yyval, yyvsp[-2]); strcat(yyval, yyvsp[0]); strcat(yyval, "/ ");}
-#line 1356 "post.c"
+#line 43 "huibian.y"
+                        { 
+            printf("SDIV r%d, r%d, r%d\n", reg-2, reg-2, reg-1);
+            --reg;
+        }
+#line 1360 "huibian.c"
     break;
 
   case 10:
-#line 42 "postfix.y"
-                                        { yyval = (char *)malloc(50*sizeof(char)); strcpy(yyval,yyvsp[-1]);}
-#line 1362 "post.c"
+#line 48 "huibian.y"
+                                  { 
+            printf("NEG r%d, r%d\n", reg-1, reg-1);
+        }
+#line 1368 "huibian.c"
     break;
 
   case 11:
-#line 43 "postfix.y"
-                        {yyval = (char *)malloc(50*sizeof(char)); strcpy(yyval, yyvsp[0]);strcat(yyval," ");}
-#line 1368 "post.c"
+#line 51 "huibian.y"
+                 { 
+            printf("MOV r%d, #%d\n", reg, (int)yylval);
+            reg++;
+        }
+#line 1377 "huibian.c"
     break;
 
 
-#line 1372 "post.c"
+#line 1381 "huibian.c"
 
       default: break;
     }
@@ -1600,66 +1609,54 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 46 "postfix.y"
-  
+#line 57 "huibian.y"
 
-// programs section
 
-int yylex()
-{
-    int t;
+int yylex() {
+        int t;
+    double tokenval = 0.0;
     while(1){
         t=getchar();
-        if(t==' '||t=='\t' || t == '\n'){
-            //do noting
-        }else if(isdigit(t)){
-            //TODO:解析多位数字返回数字类型 
-            yylval = (char*)malloc(sizeof(char) * 100);
-            int idx = 0;
-            while (isdigit(t))
-            {
-                yylval[idx++] = t;
-                t = getchar();
+        if(t==' ' || t=='\t' || t=='\n'){
+            // do nothing
+        } else if(isdigit(t)){
+            tokenval = t - '0';
+            while(isdigit(t=getchar())){
+                tokenval = tokenval*10 + t - '0';
             }
-            yylval[idx] = '\0';
-            ungetc(t, stdin); //yyin
+            // 将多读取出的一个字符放回输入流
+            ungetc(t, stdin);
+            yylval = tokenval;
             return NUMBER;
-        }else if(t=='+'){
+            
+        } else if(t == '+'){
             return ADD;
-        }else if(t=='-'){
+        } else if(t == '-'){
             return MINUS;
-        }//TODO:识别其他符号
-        else if (t == '*')
-        {
+        } else if(t == '*'){
             return MUL;
-        }
-        else if (t == '/')
-        {
+        } else if(t == '/'){   
             return DIV;
-        }
-        else if (t == '(')
-        {
-            return LPAREN;
-        }
-        else if (t == ')')
-        {
-            return RPAREN;
-        }
-        else{
+        } else if(t == '('){   
+            return left_paren; 
+        } else if(t == ')'){
+            return right_paren;
+        } else{
             return t;
         }
     }
 }
 
-int main(void)
-{
-    yyin=stdin;
+int main(void) {
+    yyin = stdin;
     do{
         yyparse();
-    }while(!feof(yyin));
+    } while(!feof(yyin));
     return 0;
 }
+
 void yyerror(const char* s){
-    fprintf(stderr,"Parse error: %s\n",s);
+    fprintf(stderr, "Parse error: %s\n", s);
     exit(1);
 }
+

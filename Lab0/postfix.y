@@ -29,18 +29,18 @@ void yyerror(const char* s);
 %%
 
 
-lines   :       lines expr '\n' { printf("%s\n", $2); }
-        |       lines '\n'
+lines   :       lines expr ';' { printf("%s\n", $2); }
+        |       lines ';'
         |
         ;
 //TODO:完善表达式的规则
-expr    :       expr ADD expr   { strcpy($$,$1);strcat($$, " ");strcat($$,$3);strcat($$, " ");strcat($$,"+"); }
-        |       expr MINUS expr   { strcpy($$,$1);strcat($$, " ");strcat($$,$3);strcat($$, " ");strcat($$,"-"); }
-        |       expr MUL expr   { strcpy($$,$1);strcat($$, " ");strcat($$,$3);strcat($$, " ");strcat($$,"*"); }
-        |       expr DIV expr   { strcpy($$,$1);strcat($$, " ");strcat($$,$3);strcat($$, " ");strcat($$,"/"); }
-        |       LPAREN expr RPAREN  { strcpy($$,$2); }
-        |       MINUS expr %prec UMINUS   { strcpy($$,$2);strcat($$, " ");strcat($$,"minus"); }
-        |       NUMBER  { strcpy($$,$1); }
+expr    :       expr ADD expr   { $$ = (char *)malloc(50*sizeof(char)); strcpy($$, $1); strcat($$, $3); strcat($$, "+ "); }
+        |       expr MINUS expr   { $$ = (char *)malloc(50*sizeof(char)); strcpy($$, $1); strcat($$, $3); strcat($$, "- ");}
+        |       MINUS expr %prec UMINUS   {$$ = (char *)malloc(50*sizeof(char)); strcpy($$, "-"); strcat($$, $2); strcat($$, " ");}
+        |       expr MUL expr   { $$ = (char *)malloc(50*sizeof(char)); strcpy($$, $1); strcat($$, $3); strcat($$, "* ");}
+        |       expr DIV expr   { $$ = (char *)malloc(50*sizeof(char)); strcpy($$, $1); strcat($$, $3); strcat($$, "/ ");}
+        |       LPAREN expr RPAREN      { $$ = (char *)malloc(50*sizeof(char)); strcpy($$,$2);}
+        |       NUMBER  {$$ = (char *)malloc(50*sizeof(char)); strcpy($$, $1);strcat($$," ");}
         ;
 
 %%  
@@ -52,8 +52,7 @@ int yylex()
     int t;
     while(1){
         t=getchar();
-        if (t == '\n') return t;
-        if(t==' '||t=='\t'){
+        if(t==' '||t=='\t' || t == '\n'){
             //do noting
         }else if(isdigit(t)){
             //TODO:解析多位数字返回数字类型 
